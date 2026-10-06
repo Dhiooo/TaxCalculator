@@ -1252,6 +1252,16 @@
         display: block;
       }
 
+      .annual-heading-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .year-select {
+        width: 106px;
+      }
+
       .report-banner {
         margin-bottom: 17px;
         padding: 24px 26px;
@@ -1262,6 +1272,10 @@
         grid-template-columns: 1.25fr repeat(3, 0.55fr);
         gap: 25px;
         align-items: center;
+      }
+
+      .report-banner.annual-summary {
+        grid-template-columns: 1.2fr repeat(4, 0.55fr);
       }
 
       .report-banner h2 {
@@ -1285,6 +1299,144 @@
 
       .report-metric strong {
         font-size: 15px;
+      }
+
+      .annual-legend {
+        margin: 0 0 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 15px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .annual-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .annual-legend i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--line-strong);
+      }
+
+      .annual-legend .draft {
+        background: #84918b;
+      }
+
+      .annual-legend .submitted {
+        background: var(--blue);
+      }
+
+      .annual-legend .revision {
+        background: var(--amber);
+      }
+
+      .annual-legend .approved {
+        background: var(--green-hover);
+      }
+
+      .annual-table {
+        min-width: 1220px;
+        table-layout: fixed;
+      }
+
+      .annual-table th,
+      .annual-table td {
+        padding: 10px 6px;
+        text-align: center;
+      }
+
+      .annual-table th:first-child,
+      .annual-table td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        width: 180px;
+        padding-left: 16px;
+        background: white;
+        text-align: left;
+      }
+
+      .annual-table thead th:first-child {
+        z-index: 3;
+        background: #fafcfb;
+      }
+
+      .annual-table th:last-child,
+      .annual-table td:last-child {
+        width: 145px;
+        text-align: left;
+      }
+
+      .month-cell {
+        width: 54px;
+        height: 36px;
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fafcfb;
+        color: #a2aca7;
+        display: inline-grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 700;
+        transition: 0.18s ease;
+      }
+
+      .month-cell:hover {
+        border-color: var(--green);
+        box-shadow: 0 0 0 2px var(--mint);
+        color: var(--green-hover);
+      }
+
+      .month-cell.status-draft {
+        border-color: #d9dfdc;
+        background: #f0f2f1;
+        color: #65716c;
+      }
+
+      .month-cell.status-submitted {
+        border-color: #cadaef;
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+
+      .month-cell.status-revision {
+        border-color: #efd9ad;
+        background: var(--amber-soft);
+        color: var(--amber);
+      }
+
+      .month-cell.status-approved {
+        border-color: var(--mint-3);
+        background: var(--mint);
+        color: var(--green-hover);
+      }
+
+      .latest-period {
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        display: grid;
+        gap: 3px;
+        text-align: left;
+      }
+
+      .latest-period strong {
+        font-size: 12px;
+      }
+
+      .latest-period span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .latest-period:hover strong {
+        color: var(--green-hover);
       }
 
       .detail-screen {
@@ -1997,6 +2149,10 @@
         .report-banner {
           grid-template-columns: 1fr 1fr;
         }
+
+        .report-banner.annual-summary {
+          grid-template-columns: 1fr 1fr;
+        }
       }
 
       @media (max-width: 790px) {
@@ -2100,6 +2256,15 @@
         .data-grid,
         .report-banner {
           grid-template-columns: 1fr;
+        }
+
+        .report-banner.annual-summary {
+          grid-template-columns: 1fr;
+        }
+
+        .annual-heading-actions {
+          margin-top: 17px;
+          align-items: stretch;
         }
 
         .flow-step {
@@ -2391,7 +2556,7 @@
             <div class="tab-panel" id="reportsPanel">
               <div class="reports-subtabs">
                 <button class="report-tab active" data-report="monthlyReport">Monthly</button>
-                <button class="report-tab" data-report="annualReport">Annual</button>
+                <button class="report-tab" data-report="annualReport">Annual Recap</button>
               </div>
 
               <div class="report-panel active" id="monthlyReport">
@@ -2442,40 +2607,65 @@
               <div class="report-panel" id="annualReport">
                 <div class="page-heading" style="margin-bottom: 18px">
                   <div>
-                    <h1 style="font-size: 26px">Annual summary</h1>
-                    <p>Rekap 12 bulan terakhir. Periode kosong tidak dianggap bernilai nol.</p>
+                    <h1 style="font-size: 26px">Annual tax recap</h1>
+                    <p>Cek calculation terakhir dan kelengkapan 12 bulan untuk setiap branch.</p>
                   </div>
-                  <button class="btn" id="annualExportBtn">Export CSV</button>
+                  <div class="annual-heading-actions">
+                    <select class="select year-select" id="annualYear" aria-label="Annual recap year">
+                      <option value="2025">2025</option>
+                      <option value="2024">2024</option>
+                    </select>
+                    <button class="btn" id="annualExportBtn">Export CSV</button>
+                  </div>
                 </div>
-                <div class="report-banner">
+                <div class="report-banner annual-summary">
                   <div>
-                    <h2>2025 year to date</h2>
-                    <p>January—May · 5 of 12 periods</p>
+                    <h2 id="annualSummaryTitle">2025 completeness</h2>
+                    <p>6 branches · 12 tax periods per branch</p>
                   </div>
                   <div class="report-metric">
-                    <span>Recorded sales</span>
-                    <strong>Rp5,81 M</strong>
+                    <span>Created</span>
+                    <strong id="annualCreated">0 / 72</strong>
                   </div>
                   <div class="report-metric">
-                    <span>Recorded tax</span>
-                    <strong>Rp47,6 jt</strong>
+                    <span>Approved</span>
+                    <strong id="annualApproved">0</strong>
                   </div>
                   <div class="report-metric">
-                    <span>Completion</span>
-                    <strong>42%</strong>
+                    <span>Needs attention</span>
+                    <strong id="annualAttention">0</strong>
                   </div>
+                  <div class="report-metric">
+                    <span>Not created</span>
+                    <strong id="annualMissing">72</strong>
+                  </div>
+                </div>
+                <div class="annual-legend" aria-label="Calculation status legend">
+                  <span><i class="approved"></i>Approved</span>
+                  <span><i class="submitted"></i>Awaiting HQ Review</span>
+                  <span><i class="revision"></i>Revision Requested</span>
+                  <span><i class="draft"></i>Draft</span>
+                  <span><i></i>Not created</span>
                 </div>
                 <article class="card">
                   <div class="table-wrap">
-                    <table>
+                    <table class="annual-table">
                       <thead>
                         <tr>
                           <th>Branch</th>
-                          <th>Jan—Apr tax</th>
-                          <th>May tax</th>
-                          <th>YTD total</th>
-                          <th>Completed periods</th>
-                          <th>Latest status</th>
+                          <th>Jan</th>
+                          <th>Feb</th>
+                          <th>Mar</th>
+                          <th>Apr</th>
+                          <th>Mei</th>
+                          <th>Jun</th>
+                          <th>Jul</th>
+                          <th>Agu</th>
+                          <th>Sep</th>
+                          <th>Okt</th>
+                          <th>Nov</th>
+                          <th>Des</th>
+                          <th>Latest</th>
                         </tr>
                       </thead>
                       <tbody id="annualRows"></tbody>
@@ -2624,8 +2814,18 @@
                           <div class="field">
                             <label for="periodInput">Tax period</label>
                             <select class="select" id="periodInput" required>
-                              <option value="Mei 2025">Mei 2025</option>
+                              <option value="Januari 2025">Januari 2025</option>
+                              <option value="Februari 2025">Februari 2025</option>
+                              <option value="Maret 2025">Maret 2025</option>
                               <option value="April 2025">April 2025</option>
+                              <option value="Mei 2025">Mei 2025</option>
+                              <option value="Juni 2025">Juni 2025</option>
+                              <option value="Juli 2025">Juli 2025</option>
+                              <option value="Agustus 2025">Agustus 2025</option>
+                              <option value="September 2025">September 2025</option>
+                              <option value="Oktober 2025">Oktober 2025</option>
+                              <option value="November 2025">November 2025</option>
+                              <option value="Desember 2025">Desember 2025</option>
                             </select>
                           </div>
                         </div>
@@ -2813,6 +3013,21 @@
           vat: "Non-PKP",
         },
       };
+
+      const taxMonths = [
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
+      ];
 
       let records = [
         {
@@ -3170,18 +3385,98 @@
             .join("") ||
           `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:35px">No approved report yet.</td></tr>`;
 
-        document.getElementById("annualRows").innerHTML = records
-          .map(
-            (record) => `<tr>
-              <td>${branchCell(record)}</td>
-              <td class="money">${rupiah.format(record.previousTax)}</td>
-              <td class="money">${rupiah.format(estimatedTax(record))}</td>
-              <td class="money">${rupiah.format(record.previousTax + estimatedTax(record))}</td>
-              <td>5 / 12 months</td>
-              <td><span class="status ${statusClass(record.status)}">${statusLabel[record.status]}</span></td>
-            </tr>`,
-          )
+        const year = Number(document.getElementById("annualYear").value);
+        const annualRecords = records.filter((record) => periodParts(record.period).year === year);
+        const totalPeriods = Object.keys(branchProfiles).length * taxMonths.length;
+        const attention = annualRecords.filter(
+          (record) => record.status === "Draft" || record.status === "Revision",
+        ).length;
+
+        document.getElementById("annualSummaryTitle").textContent = year + " completeness";
+        document.getElementById("annualCreated").textContent =
+          annualRecords.length + " / " + totalPeriods;
+        document.getElementById("annualApproved").textContent = annualRecords.filter(
+          (record) => record.status === "Approved",
+        ).length;
+        document.getElementById("annualAttention").textContent = attention;
+        document.getElementById("annualMissing").textContent =
+          totalPeriods - annualRecords.length;
+
+        document.getElementById("annualRows").innerHTML = Object.entries(branchProfiles)
+          .map(([branch, profile]) => {
+            const branchRecords = annualRecords
+              .filter((record) => record.branch === branch)
+              .sort(
+                (a, b) => periodParts(b.period).monthIndex - periodParts(a.period).monthIndex,
+              );
+            const latest = branchRecords[0];
+            const monthCells = taxMonths
+              .map((month, monthIndex) => {
+                const period = month + " " + year;
+                const record = branchRecords.find(
+                  (item) => periodParts(item.period).monthIndex === monthIndex,
+                );
+                const label =
+                  record?.status === "Approved"
+                    ? "Done"
+                    : record?.status === "Submitted"
+                      ? "Review"
+                      : record?.status === "Revision"
+                        ? "Revise"
+                        : record?.status === "Draft"
+                          ? "Draft"
+                          : "+";
+                const title = record
+                  ? period + " · " + statusLabel[record.status]
+                  : period + " · Not created — click to create";
+                return `<td>
+                  <button
+                    class="month-cell ${record ? statusClass(record.status) : ""}"
+                    type="button"
+                    title="${title}"
+                    aria-label="${branch}, ${title}"
+                    onclick='openAnnualCell(${JSON.stringify(branch)}, ${JSON.stringify(period)})'
+                  >${label}</button>
+                </td>`;
+              })
+              .join("");
+            const latestCell = latest
+              ? `<button class="latest-period" type="button" onclick="openDetail(${latest.id})">
+                  <strong>${latest.period}</strong>
+                  <span>${statusLabel[latest.status]} · ${branchRecords.length}/12 created</span>
+                </button>`
+              : `<div class="latest-period"><strong>Not started</strong><span>0/12 created</span></div>`;
+
+            return `<tr>
+              <td>
+                <div class="branch-cell">
+                  <span class="branch-code">${profile.code}</span>
+                  <div><strong>${branch}</strong><span>${branchRecords.length} of 12 periods</span></div>
+                </div>
+              </td>
+              ${monthCells}
+              <td>${latestCell}</td>
+            </tr>`;
+          })
           .join("");
+      }
+
+      function periodParts(period) {
+        const parts = period.trim().split(" ");
+        const year = Number(parts.pop());
+        const monthIndex = taxMonths.indexOf(parts.join(" "));
+        return { year, monthIndex };
+      }
+
+      function openAnnualCell(branch, period) {
+        const record = records.find(
+          (item) => item.branch === branch && item.period === period,
+        );
+        if (record) {
+          openDetail(record.id);
+          return;
+        }
+        openEditor(null, { branch, period });
       }
 
       function renderBranches() {
@@ -3219,7 +3514,7 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      function openEditor(id = null) {
+      function openEditor(id = null, prefill = {}) {
         editingId = id;
         const record = records.find((item) => item.id === id);
         document.getElementById("dialogTitle").textContent = record
@@ -3231,8 +3526,16 @@
         document.getElementById("saveCalculationBtn").textContent = record
           ? "Save Changes"
           : "Create Draft";
-        document.getElementById("branchInput").value = record?.branch || "";
-        document.getElementById("periodInput").value = record?.period || "Mei 2025";
+        document.getElementById("branchInput").value = record?.branch || prefill.branch || "";
+        const periodInput = document.getElementById("periodInput");
+        const selectedPeriod = record?.period || prefill.period || "Mei 2025";
+        if (![...periodInput.options].some((option) => option.value === selectedPeriod)) {
+          const option = document.createElement("option");
+          option.value = selectedPeriod;
+          option.textContent = selectedPeriod;
+          periodInput.append(option);
+        }
+        periodInput.value = selectedPeriod;
         document.getElementById("salesInput").value = record
           ? record.sales.toLocaleString("id-ID")
           : "";
@@ -3273,18 +3576,22 @@
         };
 
         const savedId = editingId;
+        const duplicate = records.some(
+          (record) =>
+            record.id !== editingId &&
+            record.branch === data.branch &&
+            record.period === data.period,
+        );
+        if (duplicate) {
+          showToast("Calculation untuk branch dan periode ini sudah tersedia.");
+          return;
+        }
+
         if (editingId) {
           const record = records.find((item) => item.id === editingId);
           Object.assign(record, data);
           showToast("Calculation berhasil diperbarui.");
         } else {
-          const duplicate = records.some(
-            (record) => record.branch === data.branch && record.period === data.period,
-          );
-          if (duplicate) {
-            showToast("Calculation untuk branch dan periode ini sudah tersedia.");
-            return;
-          }
           records.unshift({
             ...data,
             id: nextId++,
@@ -3562,6 +3869,7 @@
       document.getElementById("searchInput").addEventListener("input", renderTable);
       document.getElementById("statusFilter").addEventListener("change", renderTable);
       document.getElementById("periodFilter").addEventListener("change", renderTable);
+      document.getElementById("annualYear").addEventListener("change", renderReports);
       document.getElementById("cancelArchiveBtn").addEventListener("click", () =>
         document.getElementById("archiveDialog").close(),
       );
@@ -3605,17 +3913,34 @@
         showToast("Monthly report berhasil diekspor.");
       });
       document.getElementById("annualExportBtn").addEventListener("click", () => {
+        const year = Number(document.getElementById("annualYear").value);
         downloadCsv("timedoor-annual-tax-summary.csv", [
-          ["Branch", "Jan-Apr Tax", "May Tax", "YTD Total", "Status"],
-          ...records.map((record) => [
-            record.branch,
-            record.previousTax,
-            estimatedTax(record),
-            record.previousTax + estimatedTax(record),
-            record.status,
-          ]),
+          ["Branch", ...taxMonths, "Latest Period", "Latest Status", "Created Periods"],
+          ...Object.keys(branchProfiles).map((branch) => {
+            const branchRecords = records
+              .filter(
+                (record) =>
+                  record.branch === branch && periodParts(record.period).year === year,
+              )
+              .sort(
+                (a, b) => periodParts(b.period).monthIndex - periodParts(a.period).monthIndex,
+              );
+            const statuses = taxMonths.map((month, monthIndex) => {
+              const record = branchRecords.find(
+                (item) => periodParts(item.period).monthIndex === monthIndex,
+              );
+              return record ? statusLabel[record.status] : "Not created";
+            });
+            return [
+              branch,
+              ...statuses,
+              branchRecords[0]?.period || "Not started",
+              branchRecords[0] ? statusLabel[branchRecords[0].status] : "Not started",
+              branchRecords.length + "/12",
+            ];
+          }),
         ]);
-        showToast("Annual summary berhasil diekspor.");
+        showToast("Annual recap berhasil diekspor.");
       });
 
       ["salesInput", "refundInput", "adjustmentInput"].forEach((id) => {
