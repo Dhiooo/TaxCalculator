@@ -392,36 +392,106 @@
         stroke-width: 1.8;
       }
 
-      .workspace-tabs {
+      .view-selector {
         margin-bottom: 22px;
-        border-bottom: 1px solid var(--line);
+        padding: 15px 17px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: white;
+        box-shadow: 0 8px 24px rgba(21, 90, 34, 0.05);
         display: flex;
-        gap: 28px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
       }
 
-      .workspace-tab {
-        position: relative;
-        padding: 0 1px 13px;
-        border: 0;
-        background: transparent;
-        color: #84908a;
-        font-size: 11px;
-        font-weight: 700;
+      .view-selector.selector-grid {
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0;
       }
 
-      .workspace-tab.active {
+      .selector-group {
+        min-width: 0;
+        padding: 15px 17px;
+        display: grid;
+        grid-template-columns: minmax(150px, 1fr) minmax(190px, 0.9fr);
+        align-items: center;
+        gap: 16px;
+      }
+
+      .selector-group + .selector-group {
+        border-left: 1px solid var(--line);
+        background: linear-gradient(135deg, white, var(--mint-2));
+      }
+
+      .view-selector-copy {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .view-selector-index {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--mint);
         color: var(--forest);
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
       }
 
-      .workspace-tab.active::after {
-        position: absolute;
-        right: 0;
-        bottom: -1px;
-        left: 0;
-        height: 2px;
-        border-radius: 2px;
-        background: var(--green);
-        content: "";
+      .view-selector-copy strong,
+      .view-selector-copy span {
+        display: block;
+      }
+
+      .view-selector-copy > .view-selector-index {
+        display: grid;
+      }
+
+      .view-selector-copy strong {
+        margin-bottom: 3px;
+        font-size: 12px;
+      }
+
+      .view-selector-copy span {
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .view-selector-select {
+        width: 100%;
+        height: 44px;
+        padding: 0 44px 0 14px;
+        border: 1px solid var(--mint-3);
+        border-radius: 9px;
+        outline: 0;
+        appearance: none;
+        background-color: var(--mint-2);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230aa71f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        color: var(--forest-2);
+        font-size: 12px;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .view-selector-select:hover {
+        border-color: var(--green);
+        background-color: var(--mint);
+      }
+
+      .view-selector-select:focus {
+        border-color: var(--green);
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(16, 187, 37, 0.1);
       }
 
       .tab-panel {
@@ -1219,29 +1289,163 @@
         font-size: 12px;
       }
 
-      .reports-subtabs {
-        margin-bottom: 17px;
-        padding: 4px;
-        border: 1px solid var(--line);
-        border-radius: 9px;
-        background: white;
-        display: inline-flex;
+      .calculation-list,
+      .annual-list {
+        padding: 10px;
+        display: grid;
+        gap: 9px;
       }
 
-      .report-tab {
-        min-width: 86px;
-        height: 32px;
-        border: 0;
-        border-radius: 6px;
-        background: transparent;
+      .calculation-item,
+      .annual-branch {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        background: white;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .calculation-item:hover,
+      .annual-branch:hover,
+      .calculation-item[open],
+      .annual-branch[open] {
+        border-color: var(--mint-3);
+        box-shadow: 0 7px 20px rgba(21, 90, 34, 0.06);
+      }
+
+      .calculation-item summary,
+      .annual-branch summary {
+        min-height: 70px;
+        padding: 13px 15px;
+        list-style: none;
+        cursor: pointer;
+        display: grid;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .calculation-item summary {
+        grid-template-columns: minmax(210px, 1.25fr) minmax(145px, 0.7fr) auto 34px;
+      }
+
+      .annual-branch summary {
+        grid-template-columns: minmax(220px, 1fr) auto 34px;
+      }
+
+      .calculation-item summary::-webkit-details-marker,
+      .annual-branch summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .accordion-chevron {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--mint-2);
+        color: var(--forest);
+        display: grid;
+        place-items: center;
+        transition: transform 0.2s ease;
+      }
+
+      .accordion-chevron svg {
+        width: 15px;
+        height: 15px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
+      }
+
+      details[open] > summary .accordion-chevron {
+        transform: rotate(180deg);
+      }
+
+      details[open] > summary {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .calculation-summary-value,
+      .calculation-status {
+        display: grid;
+        gap: 4px;
+      }
+
+      .calculation-summary-value span,
+      .calculation-status small,
+      .annual-branch-meta {
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .calculation-summary-value strong {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+      }
+
+      .calculation-status {
+        justify-items: end;
+      }
+
+      .calculation-body {
+        padding: 16px;
+        background: #fcfefd;
+      }
+
+      .calculation-facts {
+        margin-bottom: 15px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .calculation-fact {
+        min-height: 66px;
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+        display: grid;
+        align-content: center;
+        gap: 4px;
+      }
+
+      .calculation-fact span {
         color: var(--muted);
         font-size: 9px;
-        font-weight: 700;
       }
 
-      .report-tab.active {
-        background: var(--mint);
-        color: var(--forest);
+      .calculation-fact strong {
+        font-size: 11px;
+      }
+
+      .calculation-actions {
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .calculation-actions .btn {
+        min-width: 128px;
+      }
+
+      .calculation-actions .archive-link {
+        min-width: 0;
+        margin-right: auto;
+        border-color: transparent;
+        background: transparent;
+        color: var(--red);
+        box-shadow: none;
+      }
+
+      .calculation-actions .archive-link:hover {
+        border-color: #eccdca;
+        background: var(--red-soft);
+        transform: none;
       }
 
       .report-panel {
@@ -1301,42 +1505,172 @@
         font-size: 15px;
       }
 
-      .annual-legend {
-        margin: 0 0 12px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px 15px;
-        color: var(--muted);
-        font-size: 12px;
+      .annual-list {
+        padding: 0;
       }
 
-      .annual-legend span {
-        display: inline-flex;
+      .annual-branch-head {
+        display: flex;
         align-items: center;
+        gap: 11px;
+      }
+
+      .annual-branch-title {
+        display: grid;
+        gap: 3px;
+      }
+
+      .annual-branch-title strong {
+        font-size: 13px;
+      }
+
+      .annual-branch-progress {
+        width: 180px;
+        display: grid;
         gap: 6px;
       }
 
-      .annual-legend i {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--line-strong);
+      .annual-branch-progress span {
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 600;
+        text-align: right;
       }
 
-      .annual-legend .draft {
-        background: #84918b;
+      .annual-progress-track {
+        height: 5px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #edf2ef;
       }
 
-      .annual-legend .submitted {
-        background: var(--blue);
+      .annual-progress-track i {
+        height: 100%;
+        border-radius: inherit;
+        background: var(--green);
+        display: block;
       }
 
-      .annual-legend .revision {
-        background: var(--amber);
+      .annual-branch-body {
+        background: #fbfdfc;
       }
 
-      .annual-legend .approved {
-        background: var(--green-hover);
+      .annual-branch-intro {
+        padding: 14px 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+      }
+
+      .annual-branch-intro strong {
+        font-size: 11px;
+      }
+
+      .annual-branch-intro span {
+        color: var(--muted);
+        font-size: 9px;
+      }
+
+      .annual-months {
+        padding: 15px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .annual-month-card {
+        min-height: 76px;
+        padding: 10px 11px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+        transition: 0.18s ease;
+      }
+
+      .annual-month-card:hover {
+        border-color: var(--green);
+        background: var(--mint-2);
+        transform: translateY(-1px);
+      }
+
+      .month-number {
+        width: 29px;
+        height: 29px;
+        border-radius: 7px;
+        background: #f2f5f3;
+        color: var(--muted);
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        font-family: "DM Mono", monospace;
+        font-size: 9px;
+      }
+
+      .annual-month-copy {
+        min-width: 0;
+        display: grid;
+        gap: 5px;
+      }
+
+      .annual-month-copy strong {
+        font-size: 11px;
+      }
+
+      .month-state {
+        width: fit-content;
+        padding: 3px 6px;
+        border-radius: 999px;
+        background: #f0f2f1;
+        color: var(--muted);
+        font-size: 8px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .annual-month-card.status-approved .month-state {
+        background: white;
+        color: var(--green-hover);
+      }
+
+      .annual-month-card.status-submitted .month-state {
+        background: white;
+        color: var(--blue);
+      }
+
+      .annual-month-card.status-revision .month-state {
+        background: white;
+        color: var(--amber);
+      }
+
+      .annual-month-card.status-draft .month-state {
+        background: white;
+        color: #65716c;
+      }
+
+      .annual-month-card.status-draft {
+        border-color: #d9dfdc;
+        background: #f4f6f5;
+      }
+
+      .annual-month-card.status-submitted {
+        border-color: #cadaef;
+        background: var(--blue-soft);
+      }
+
+      .annual-month-card.status-revision {
+        border-color: #efd9ad;
+        background: var(--amber-soft);
+      }
+
+      .annual-month-card.status-approved {
+        border-color: var(--mint-3);
+        background: var(--mint);
       }
 
       .annual-table {
@@ -2153,6 +2487,14 @@
         .report-banner.annual-summary {
           grid-template-columns: 1fr 1fr;
         }
+
+        .annual-months {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .selector-group {
+          grid-template-columns: 1fr;
+        }
       }
 
       @media (max-width: 790px) {
@@ -2194,6 +2536,22 @@
 
         .content {
           padding: 28px 18px 55px;
+        }
+
+        .calculation-item summary {
+          grid-template-columns: minmax(0, 1fr) auto 34px;
+        }
+
+        .calculation-summary-value {
+          display: none;
+        }
+
+        .calculation-facts {
+          grid-template-columns: 1fr;
+        }
+
+        .annual-months {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -2265,6 +2623,65 @@
         .annual-heading-actions {
           margin-top: 17px;
           align-items: stretch;
+        }
+
+        .view-selector {
+          padding: 14px;
+          align-items: stretch;
+          flex-direction: column;
+          gap: 13px;
+        }
+
+        .view-selector.selector-grid {
+          padding: 0;
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+
+        .selector-group {
+          padding: 14px;
+        }
+
+        .selector-group + .selector-group {
+          border-top: 1px solid var(--line);
+          border-left: 0;
+        }
+
+        .view-selector-select {
+          width: 100%;
+        }
+
+        .calculation-item summary,
+        .annual-branch summary {
+          min-height: 64px;
+          padding: 11px;
+          gap: 9px;
+        }
+
+        .calculation-item summary {
+          grid-template-columns: minmax(0, 1fr) 34px;
+        }
+
+        .calculation-status {
+          padding: 0 11px 11px;
+          grid-column: 1 / -1;
+          justify-items: start;
+        }
+
+        .annual-branch summary {
+          grid-template-columns: minmax(0, 1fr) 34px;
+        }
+
+        .annual-branch-progress {
+          display: none;
+        }
+
+        .annual-months {
+          grid-template-columns: 1fr;
+        }
+
+        .calculation-actions .btn {
+          flex: 1;
         }
 
         .flow-step {
@@ -2466,9 +2883,41 @@
               <button class="btn btn-primary" id="newCalculationBtn">+ New Calculation</button>
             </div>
 
-            <div class="workspace-tabs">
-              <button class="workspace-tab active" data-workspace="taxWorkPanel">Tax Work</button>
-              <button class="workspace-tab" data-workspace="reportsPanel">Reports</button>
+            <div class="view-selector selector-grid">
+              <div class="selector-group">
+                <div class="view-selector-copy">
+                  <span class="view-selector-index">01</span>
+                  <div>
+                    <strong>Workspace view</strong>
+                    <span>Pilih pekerjaan pajak atau lihat laporan.</span>
+                  </div>
+                </div>
+                <select
+                  class="view-selector-select"
+                  id="workspaceSelect"
+                  aria-label="Pilih tampilan Tax Management"
+                >
+                  <option value="taxWorkPanel">Tax Work — Calculations</option>
+                  <option value="reportsPanel">Reports — Monthly & Annual</option>
+                </select>
+              </div>
+              <div class="selector-group">
+                <div class="view-selector-copy">
+                  <span class="view-selector-index">02</span>
+                  <div>
+                    <strong>Report type</strong>
+                    <span>Pilih laporan bulanan atau annual recap.</span>
+                  </div>
+                </div>
+                <select
+                  class="view-selector-select"
+                  id="reportSelect"
+                  aria-label="Pilih jenis laporan"
+                >
+                  <option value="monthlyReport">Monthly Report</option>
+                  <option value="annualReport">Annual Recap</option>
+                </select>
+              </div>
             </div>
 
             <div class="tab-panel active" id="taxWorkPanel">
@@ -2526,26 +2975,11 @@
                 <div class="card-head">
                   <div>
                     <h2>Branch calculations</h2>
-                    <p>Create, review, update, dan arsipkan calculation dari tabel ini.</p>
+                    <p>Buka setiap branch untuk melihat detail dan action calculation.</p>
                   </div>
                   <span id="recordCount" style="color: var(--muted); font-size: 9px"></span>
                 </div>
-                <div class="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Branch & period</th>
-                        <th>Final sales</th>
-                        <th>Tax scheme</th>
-                        <th>Estimated tax</th>
-                        <th>Status</th>
-                        <th>Updated</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody id="taxRows"></tbody>
-                  </table>
-                </div>
+                <div class="calculation-list" id="taxRows"></div>
                 <div class="empty-state" id="emptyState">
                   <strong>No calculation found</strong>
                   Ubah kata pencarian atau filter yang digunakan.
@@ -2554,11 +2988,6 @@
             </div>
 
             <div class="tab-panel" id="reportsPanel">
-              <div class="reports-subtabs">
-                <button class="report-tab active" data-report="monthlyReport">Monthly</button>
-                <button class="report-tab" data-report="annualReport">Annual Recap</button>
-              </div>
-
               <div class="report-panel active" id="monthlyReport">
                 <div class="page-heading" style="margin-bottom: 18px">
                   <div>
@@ -2640,38 +3069,7 @@
                     <strong id="annualMissing">72</strong>
                   </div>
                 </div>
-                <div class="annual-legend" aria-label="Calculation status legend">
-                  <span><i class="approved"></i>Approved</span>
-                  <span><i class="submitted"></i>Awaiting HQ Review</span>
-                  <span><i class="revision"></i>Revision Requested</span>
-                  <span><i class="draft"></i>Draft</span>
-                  <span><i></i>Not created</span>
-                </div>
-                <article class="card">
-                  <div class="table-wrap">
-                    <table class="annual-table">
-                      <thead>
-                        <tr>
-                          <th>Branch</th>
-                          <th>Jan</th>
-                          <th>Feb</th>
-                          <th>Mar</th>
-                          <th>Apr</th>
-                          <th>Mei</th>
-                          <th>Jun</th>
-                          <th>Jul</th>
-                          <th>Agu</th>
-                          <th>Sep</th>
-                          <th>Okt</th>
-                          <th>Nov</th>
-                          <th>Des</th>
-                          <th>Latest</th>
-                        </tr>
-                      </thead>
-                      <tbody id="annualRows"></tbody>
-                    </table>
-                  </div>
-                </article>
+                <div class="annual-list" id="annualRows"></div>
               </div>
             </div>
           </section>
@@ -3166,6 +3564,13 @@
         Approved: "Approved",
       };
 
+      const statusNextStep = {
+        Draft: "Continue calculation",
+        Submitted: "Waiting for HQ decision",
+        Revision: "Changes requested",
+        Approved: "Ready for final report",
+      };
+
       const statusClass = (status) => "status-" + status.toLowerCase();
 
       const icons = {
@@ -3216,41 +3621,56 @@
 
         document.getElementById("taxRows").innerHTML = visible
           .map(
-            (record) => `<tr>
-              <td>${branchCell(record)}</td>
-              <td class="money">${rupiah.format(finalSales(record))}</td>
-              <td>${record.scheme}</td>
-              <td class="money">${rupiah.format(estimatedTax(record))}</td>
-              <td><span class="status ${statusClass(record.status)}">${statusLabel[record.status]}</span></td>
-              <td>${record.updated}</td>
-              <td>
-                <div class="row-actions">
-                  <button class="action-menu-button" aria-expanded="false"
-                    onclick="toggleActionMenu(event, ${record.id})" aria-label="Open actions for ${record.branch}">
-                    ${icons.more}
-                  </button>
-                  <div class="action-menu" id="action-menu-${record.id}">
-                    <button class="menu-item" onclick="openDetail(${record.id})">
-                      ${icons.view} View details
-                    </button>
-                    <button class="menu-item" onclick="openEditor(${record.id})">
-                      ${icons.edit} Edit calculation
-                    </button>
-                    <button class="menu-item danger" onclick="requestArchive(${record.id})"
-                      ${record.status === "Draft" ? "" : "disabled"}>
-                      ${icons.archive} ${record.status === "Draft" ? "Archive draft" : "Archive unavailable"}
-                    </button>
+            (record, index) => `<details class="calculation-item"${index === 0 ? " open" : ""}>
+              <summary>
+                ${branchCell(record)}
+                <span class="calculation-summary-value">
+                  <span>Estimated tax</span>
+                  <strong>${rupiah.format(estimatedTax(record))}</strong>
+                </span>
+                <span class="calculation-status">
+                  <span class="status ${statusClass(record.status)}">${statusLabel[record.status]}</span>
+                  <small>${statusNextStep[record.status]}</small>
+                </span>
+                <span class="accordion-chevron">${icons.chevronDown}</span>
+              </summary>
+              <div class="calculation-body">
+                <div class="calculation-facts">
+                  <div class="calculation-fact">
+                    <span>Final sales</span>
+                    <strong class="money">${rupiah.format(finalSales(record))}</strong>
+                  </div>
+                  <div class="calculation-fact">
+                    <span>Tax scheme</span>
+                    <strong>${record.scheme}</strong>
+                  </div>
+                  <div class="calculation-fact">
+                    <span>Last updated</span>
+                    <strong>${record.updated}</strong>
                   </div>
                 </div>
-              </td>
-            </tr>`,
+                <div class="calculation-actions">
+                  ${
+                    record.status === "Draft"
+                      ? `<button class="btn archive-link" type="button" onclick="requestArchive(${record.id})">Archive draft</button>`
+                      : ""
+                  }
+                  <button class="btn" type="button" onclick="openEditor(${record.id})">
+                    Edit calculation
+                  </button>
+                  <button class="btn btn-primary" type="button" onclick="openDetail(${record.id})">
+                    Open calculation
+                  </button>
+                </div>
+              </div>
+            </details>`,
           )
           .join("");
 
         document.getElementById("recordCount").textContent =
           visible.length + " of " + records.length + " calculations";
         document.getElementById("emptyState").style.display = visible.length ? "none" : "block";
-        document.querySelector("#taxWorkPanel table").style.display = visible.length ? "table" : "none";
+        document.getElementById("taxRows").style.display = visible.length ? "grid" : "none";
       }
 
       function closeActionMenus() {
@@ -3410,53 +3830,66 @@
                 (a, b) => periodParts(b.period).monthIndex - periodParts(a.period).monthIndex,
               );
             const latest = branchRecords[0];
-            const monthCells = taxMonths
+            const monthCards = taxMonths
               .map((month, monthIndex) => {
                 const period = month + " " + year;
                 const record = branchRecords.find(
                   (item) => periodParts(item.period).monthIndex === monthIndex,
                 );
-                const label =
-                  record?.status === "Approved"
-                    ? "Done"
-                    : record?.status === "Submitted"
-                      ? "Review"
-                      : record?.status === "Revision"
-                        ? "Revise"
-                        : record?.status === "Draft"
-                          ? "Draft"
-                          : "+";
                 const title = record
                   ? period + " · " + statusLabel[record.status]
                   : period + " · Not created — click to create";
-                return `<td>
-                  <button
-                    class="month-cell ${record ? statusClass(record.status) : ""}"
-                    type="button"
-                    title="${title}"
-                    aria-label="${branch}, ${title}"
-                    onclick='openAnnualCell(${JSON.stringify(branch)}, ${JSON.stringify(period)})'
-                  >${label}</button>
-                </td>`;
+                const monthStatus = record
+                  ? record.status === "Submitted"
+                    ? "HQ Review"
+                    : record.status === "Revision"
+                      ? "Needs revision"
+                      : statusLabel[record.status]
+                  : "Create calculation";
+                return `<button
+                  class="annual-month-card ${record ? statusClass(record.status) : ""}"
+                  type="button"
+                  title="${title}"
+                  aria-label="${branch}, ${title}"
+                  onclick='openAnnualCell(${JSON.stringify(branch)}, ${JSON.stringify(period)})'
+                >
+                  <span class="month-number">${String(monthIndex + 1).padStart(2, "0")}</span>
+                  <span class="annual-month-copy">
+                    <strong>${month}</strong>
+                    <span class="month-state">${monthStatus}</span>
+                  </span>
+                </button>`;
               })
               .join("");
-            const latestCell = latest
-              ? `<button class="latest-period" type="button" onclick="openDetail(${latest.id})">
-                  <strong>${latest.period}</strong>
-                  <span>${statusLabel[latest.status]} · ${branchRecords.length}/12 created</span>
-                </button>`
-              : `<div class="latest-period"><strong>Not started</strong><span>0/12 created</span></div>`;
 
-            return `<tr>
-              <td>
-                <div class="branch-cell">
+            const latestText = latest
+              ? `Latest: ${latest.period} · ${statusLabel[latest.status]}`
+              : "Belum ada calculation pada tahun ini";
+            const completion = Math.round((branchRecords.length / taxMonths.length) * 100);
+
+            return `<details class="annual-branch"${branch === "Denpasar" ? " open" : ""}>
+              <summary>
+                <span class="annual-branch-head">
                   <span class="branch-code">${profile.code}</span>
-                  <div><strong>${branch}</strong><span>${branchRecords.length} of 12 periods</span></div>
+                  <span class="annual-branch-title">
+                    <strong>${branch}</strong>
+                    <span class="annual-branch-meta">${latestText}</span>
+                  </span>
+                </span>
+                <span class="annual-branch-progress">
+                  <span>${branchRecords.length} of 12 periods created</span>
+                  <span class="annual-progress-track"><i style="width:${completion}%"></i></span>
+                </span>
+                <span class="accordion-chevron">${icons.chevronDown}</span>
+              </summary>
+              <div class="annual-branch-body">
+                <div class="annual-branch-intro">
+                  <strong>Monthly calculations</strong>
+                  <span>Select a month to open details or create a calculation.</span>
                 </div>
-              </td>
-              ${monthCells}
-              <td>${latestCell}</td>
-            </tr>`;
+                <div class="annual-months">${monthCards}</div>
+              </div>
+            </details>`;
           })
           .join("");
       }
@@ -3840,22 +4273,25 @@
       });
       document.addEventListener("click", closeActionMenus);
 
-      document.querySelectorAll(".workspace-tab").forEach((button) => {
-        button.addEventListener("click", () => {
-          document.querySelectorAll(".workspace-tab").forEach((item) => item.classList.remove("active"));
-          document.querySelectorAll(".tab-panel").forEach((item) => item.classList.remove("active"));
-          button.classList.add("active");
-          document.getElementById(button.dataset.workspace).classList.add("active");
-        });
+      function showWorkspacePanel(panelId) {
+        document.querySelectorAll(".tab-panel").forEach((item) => item.classList.remove("active"));
+        document.getElementById(panelId).classList.add("active");
+        document.getElementById("workspaceSelect").value = panelId;
+      }
+
+      function showReportPanel(panelId) {
+        document.querySelectorAll(".report-panel").forEach((item) => item.classList.remove("active"));
+        document.getElementById(panelId).classList.add("active");
+        document.getElementById("reportSelect").value = panelId;
+      }
+
+      document.getElementById("workspaceSelect").addEventListener("change", (event) => {
+        showWorkspacePanel(event.target.value);
       });
 
-      document.querySelectorAll(".report-tab").forEach((button) => {
-        button.addEventListener("click", () => {
-          document.querySelectorAll(".report-tab").forEach((item) => item.classList.remove("active"));
-          document.querySelectorAll(".report-panel").forEach((item) => item.classList.remove("active"));
-          button.classList.add("active");
-          document.getElementById(button.dataset.report).classList.add("active");
-        });
+      document.getElementById("reportSelect").addEventListener("change", (event) => {
+        showWorkspacePanel("reportsPanel");
+        showReportPanel(event.target.value);
       });
 
       document.getElementById("newCalculationBtn").addEventListener("click", () => openEditor());
@@ -3876,7 +4312,7 @@
       document.getElementById("confirmArchiveBtn").addEventListener("click", confirmArchive);
       document.getElementById("backToWork").addEventListener("click", () => {
         showScreen("taxScreen");
-        document.querySelector('[data-workspace="taxWorkPanel"]').click();
+        showWorkspacePanel("taxWorkPanel");
       });
       document.getElementById("mobileMenu").addEventListener("click", () =>
         document.getElementById("sidebar").classList.toggle("open"),
